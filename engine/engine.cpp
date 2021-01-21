@@ -36,7 +36,7 @@ namespace deusage
 
 			window = SDL_CreateWindow("Ama Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
 
-			if (window == NULL)
+			if (window == nullptr)
 			{
 				printf("SDL window creation: %s\n", SDL_GetError());
 				return;
@@ -62,6 +62,26 @@ namespace deusage
 			SDL_Quit();
 		}
 
+		void engine_window_resized(unsigned w, unsigned h)
+		{
+			printf("engine window has been resized to %ux%u\n", w, h);
+		}
+
+		void engine_input_handler(SDL_Event *e)
+		{
+			switch (e->type)
+			{
+			case SDL_WINDOWEVENT:
+				switch (e->window.event)
+				{
+				case SDL_WINDOWEVENT_RESIZED:
+					engine_window_resized(e->window.data1, e->window.data2);
+					break;
+				}
+				break;
+			}
+		}
+
 		void loop()
 		{
 			running = true;
@@ -71,6 +91,7 @@ namespace deusage
 				SDL_Event e;
 				if (SDL_PollEvent(&e))
 				{
+					engine_input_handler(&e);
 					input_handler(&e);
 				}
 
